@@ -7,7 +7,7 @@ import { MapPin, SlidersHorizontal } from 'lucide-react';
 const CUSTOMER_LAT = 12.9716;
 const CUSTOMER_LNG = 77.5946;
 
-export default function NearbyProviders() {
+export default function Services() {
   const { vendors } = useDataStore();
   const [radius, setRadius] = useState<number>(1);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');

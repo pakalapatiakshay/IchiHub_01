@@ -30,7 +30,6 @@ export default function Navbar() {
   const navLinks = [
     { label: 'Home', to: '/' },
     { label: 'Services', to: '/services' },
-    { label: 'Nearby', to: '/providers' },
     { label: 'About', to: '/about' },
   ];
 

@@ -6,7 +6,7 @@ export default function Home() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/providers');
+    navigate('/services');
   };
 
   return (
@@ -15,11 +15,11 @@ export default function Home() {
       <section className="relative bg-brand-dark text-white min-h-[620px] flex items-center overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/95 to-brand-dark/60 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/90 via-brand-dark/70 to-brand-dark/30 z-10" />
           <img
             src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2069&auto=format&fit=crop"
             alt="Electrician working"
-            className="absolute inset-0 w-full h-full object-cover opacity-35"
+            className="absolute inset-0 w-full h-full object-cover opacity-50"
           />
         </div>
 
@@ -154,7 +154,7 @@ export default function Home() {
           <h2 className="text-3xl md:text-5xl font-display font-bold mb-5 leading-tight">Need Help Right Now?</h2>
           <p className="text-lg text-gray-400 mb-10 max-w-2xl mx-auto">Find available service providers near you and get connected quickly for urgent repairs.</p>
           <div className="flex flex-col sm:flex-row justify-center gap-3">
-            <Link to="/providers" className="btn-primary btn-lg">
+            <Link to="/services" className="btn-primary btn-lg">
               Find Help Near Me
             </Link>
             <Link to="/vendor/register" className="btn-ghost-white btn-lg">
