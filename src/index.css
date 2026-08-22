@@ -27,13 +27,16 @@
   ::-webkit-scrollbar {
     width: 6px;
   }
+
   ::-webkit-scrollbar-track {
     background: transparent;
   }
+
   ::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.15);
     border-radius: 9999px;
   }
+
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.25);
   }
@@ -47,6 +50,7 @@
 }
 
 @layer components {
+
   /* ── Glass Surfaces ── */
   .glass {
     background: rgba(255, 255, 255, 0.72);
@@ -210,6 +214,7 @@
 }
 
 @layer utilities {
+
   /* Toast slide-in */
   .animate-toast-in {
     animation: toast-in 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
@@ -226,16 +231,34 @@
   }
 
   /* Staggered children fade-up */
-  .stagger-children > * {
+  .stagger-children>* {
     opacity: 0;
     animation: fade-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
-  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-  .stagger-children > *:nth-child(2) { animation-delay: 60ms; }
-  .stagger-children > *:nth-child(3) { animation-delay: 120ms; }
-  .stagger-children > *:nth-child(4) { animation-delay: 180ms; }
-  .stagger-children > *:nth-child(5) { animation-delay: 240ms; }
-  .stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+
+  .stagger-children>*:nth-child(1) {
+    animation-delay: 0ms;
+  }
+
+  .stagger-children>*:nth-child(2) {
+    animation-delay: 60ms;
+  }
+
+  .stagger-children>*:nth-child(3) {
+    animation-delay: 120ms;
+  }
+
+  .stagger-children>*:nth-child(4) {
+    animation-delay: 180ms;
+  }
+
+  .stagger-children>*:nth-child(5) {
+    animation-delay: 240ms;
+  }
+
+  .stagger-children>*:nth-child(6) {
+    animation-delay: 300ms;
+  }
 
   /* Custom range slider */
   input[type="range"] {
@@ -246,6 +269,7 @@
     background: #E5E7EB;
     outline: none;
   }
+
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -258,10 +282,12 @@
     box-shadow: 0 2px 8px rgba(241, 90, 36, 0.3);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
+
   input[type="range"]::-webkit-slider-thumb:hover {
     transform: scale(1.15);
     box-shadow: 0 3px 12px rgba(241, 90, 36, 0.4);
   }
+
   input[type="range"]::-moz-range-thumb {
     width: 20px;
     height: 20px;
@@ -271,4 +297,191 @@
     border: 3px solid white;
     box-shadow: 0 2px 8px rgba(241, 90, 36, 0.3);
   }
+}
+
+/* ============================================
+   MAP & TRACKING STYLES
+   ============================================ */
+
+/* Map container base */
+.ichi-map {
+  border-radius: inherit;
+  z-index: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.ichi-map .leaflet-tile-pane {
+  filter: saturate(0.85) contrast(1.02);
+}
+
+/* ── Custom Map Controls ── */
+.ichi-map-control-btn {
+  @apply w-9 h-9 bg-white shadow-card rounded-xl flex items-center justify-center text-brand-dark;
+  @apply hover:bg-gray-50 hover:shadow-card-hover transition-all duration-200;
+  @apply active:scale-95;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* ── User Marker (Pulsing Blue Dot) ── */
+.ichi-user-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.ichi-user-marker-outer {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ichi-user-marker-inner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #3B82F6;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+  z-index: 2;
+  position: relative;
+}
+
+.ichi-user-marker-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.2);
+  animation: user-pulse 2s ease-out infinite;
+  z-index: 1;
+}
+
+@keyframes user-pulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* ── Vendor Markers ── */
+.ichi-vendor-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.ichi-vendor-tracking-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.ichi-vendor-tracking-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #F15A24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(241, 90, 36, 0.4);
+  border: 3px solid white;
+  animation: vendor-pulse 2s ease-in-out infinite;
+}
+
+@keyframes vendor-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 4px 16px rgba(241, 90, 36, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 4px 24px rgba(241, 90, 36, 0.6);
+  }
+}
+
+/* ── Service Location Marker ── */
+.ichi-service-marker {
+  background: none !important;
+  border: none !important;
+}
+
+.ichi-service-marker-pin {
+  filter: drop-shadow(0 3px 6px rgba(16, 185, 129, 0.3));
+}
+
+/* ── Location Picker Pin ── */
+.ichi-picker-pin {
+  background: none !important;
+  border: none !important;
+  filter: drop-shadow(0 3px 8px rgba(241, 90, 36, 0.35));
+}
+
+/* ── Leaflet Popup Overrides ── */
+.ichi-popup .leaflet-popup-content-wrapper {
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1), 0 3px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 0;
+}
+
+.ichi-popup .leaflet-popup-content {
+  margin: 8px 10px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.ichi-popup .leaflet-popup-tip-container {
+  display: none;
+}
+
+.ichi-popup .leaflet-popup-close-button {
+  top: 6px !important;
+  right: 6px !important;
+  width: 22px !important;
+  height: 22px !important;
+  font-size: 16px !important;
+  color: #9CA3AF !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.ichi-popup .leaflet-popup-close-button:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #111 !important;
+}
+
+/* ── Leaflet Attribution ── */
+.leaflet-control-attribution {
+  font-size: 9px !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+  padding: 2px 6px !important;
+  border-radius: 8px !important;
+}
+
+/* ── Bottom Sheet Styles (Mobile Tracking) ── */
+@media (max-width: 767px) {
+  .ichi-bottom-sheet {
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* ── Map Loading State ── */
+.ichi-map-loading {
+  @apply bg-gray-100 flex items-center justify-center;
+  @apply text-gray-400 text-sm font-medium;
 }

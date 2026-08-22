@@ -1,8 +1,8 @@
 import { useAuth } from '../../store/authStore';
 import { useDataStore } from '../../store/dataStore';
 import { useToastStore } from '../../store/toastStore';
-import { LogOut, LayoutDashboard, Briefcase, IndianRupee, Bell, AlertTriangle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { LogOut, LayoutDashboard, Briefcase, IndianRupee, Bell, AlertTriangle, Navigation, MapPin } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function VendorDashboard() {
   const { user, logout } = useAuth();
@@ -18,6 +18,9 @@ export default function VendorDashboard() {
   const myProfile = vendors.find(v => v.user_id === user?.id);
   const myBookings = bookings.filter(b => b.vendor_id === myProfile?.id);
   const pendingBookings = myBookings.filter(b => b.status === 'pending');
+  const activeBookings = myBookings.filter(b =>
+    ['accepted', 'on_the_way', 'arrived', 'in_progress'].includes(b.status)
+  );
 
   const handleAccept = (bookingId: string) => {
     updateBookingStatus(bookingId, 'accepted');
@@ -27,6 +30,24 @@ export default function VendorDashboard() {
   const handleReject = (bookingId: string) => {
     updateBookingStatus(bookingId, 'cancelled');
     addToast('Job rejected.', 'info');
+  };
+
+  const statusColor: Record<string, string> = {
+    accepted: 'badge-info',
+    on_the_way: 'badge-accent',
+    arrived: 'badge-success',
+    in_progress: 'badge-accent',
+    completed: 'badge-success',
+    cancelled: 'badge-error',
+  };
+
+  const statusLabel: Record<string, string> = {
+    accepted: 'Accepted',
+    on_the_way: 'On The Way',
+    arrived: 'Arrived',
+    in_progress: 'In Progress',
+    completed: 'Completed',
+    cancelled: 'Cancelled',
   };
 
   return (
@@ -94,7 +115,7 @@ export default function VendorDashboard() {
                   <Briefcase size={16} />
                 </div>
               </div>
-              <div className="text-2xl font-bold text-brand-dark">{myBookings.filter(b => b.status === 'in_progress' || b.status === 'accepted').length}</div>
+              <div className="text-2xl font-bold text-brand-dark">{activeBookings.length}</div>
             </div>
             <div className="card p-5">
               <div className="flex items-center justify-between mb-3">
@@ -107,6 +128,39 @@ export default function VendorDashboard() {
             </div>
           </div>
 
+          {/* Active Jobs */}
+          {activeBookings.length > 0 && (
+            <>
+              <h2 className="text-lg font-bold text-brand-dark pt-2">Active Jobs</h2>
+              <div className="space-y-4 stagger-children">
+                {activeBookings.map(booking => (
+                  <div key={booking.id} className="card p-5 border-l-4 border-l-semantic-info flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className={statusColor[booking.status] || 'badge-dark'}>
+                          {statusLabel[booking.status] || booking.status}
+                        </span>
+                        <span className="text-xs text-gray-400">{booking.date} at {booking.time}</span>
+                      </div>
+                      <h3 className="font-bold text-brand-dark">{booking.service}</h3>
+                      <p className="text-gray-500 text-xs mt-0.5">
+                        <MapPin size={11} className="inline mr-1" />
+                        {booking.booking_address || booking.address}
+                      </p>
+                    </div>
+                    <Link
+                      to={`/vendor/bookings/${booking.id}/track`}
+                      className="btn-primary btn-sm flex items-center gap-1.5 self-start md:self-center"
+                    >
+                      <Navigation size={13} /> Track / Manage
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Pending Requests */}
           <h2 className="text-lg font-bold text-brand-dark pt-2">Recent Requests</h2>
 
           {pendingBookings.length > 0 ? (
@@ -119,7 +173,10 @@ export default function VendorDashboard() {
                       <span className="text-xs text-gray-400">{booking.date} at {booking.time}</span>
                     </div>
                     <h3 className="font-bold text-brand-dark">{booking.service}</h3>
-                    <p className="text-gray-500 text-xs mt-0.5">{booking.address}</p>
+                    <p className="text-gray-500 text-xs mt-0.5">
+                      <MapPin size={11} className="inline mr-1" />
+                      {booking.booking_address || booking.address}
+                    </p>
                   </div>
                   <div className="flex gap-2 self-start md:self-center">
                     <button

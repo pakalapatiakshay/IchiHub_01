@@ -1,5 +1,6 @@
 import { MapPin, Search, ArrowRight, ShieldCheck, Zap, Star } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import serviceWorkerImg from '../service_worker.jpg';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -12,67 +13,120 @@ export default function Home() {
   return (
     <div className="flex flex-col w-full">
       {/* 1. HERO SECTION */}
-      <section className="relative bg-brand-dark text-white min-h-[620px] flex items-center overflow-hidden">
-        {/* Background */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/90 via-brand-dark/70 to-brand-dark/30 z-10" />
-          <img
-            src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2069&auto=format&fit=crop"
-            alt="Electrician working"
-            className="absolute inset-0 w-full h-full object-cover opacity-50"
-          />
+      <section className="relative bg-brand-dark text-white min-h-[640px] flex items-center overflow-hidden">
+        {/* Curved Background Glow Layer (starts top right, ends bottom left) */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+          <svg className="absolute top-0 right-0 w-full h-full text-brand-accent/[0.04]" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="heroBgGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#F15A24" stopOpacity="0.2" />
+                <stop offset="50%" stopColor="#E04D18" stopOpacity="0.08" />
+                <stop offset="100%" stopColor="#111111" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="solidAccentLine" x1="100%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#F15A24" />
+                <stop offset="100%" stopColor="#E04D18" />
+              </linearGradient>
+            </defs>
+            <path d="M 100 0 C 70 10, 30 50, 0 100 L 100 100 Z" fill="url(#heroBgGrad)" />
+            <path d="M 100 0 C 70 10, 30 50, 0 100" fill="none" stroke="url(#solidAccentLine)" strokeWidth="0.5" opacity="0.25" />
+          </svg>
         </div>
 
-        <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-12 w-full pt-16 pb-28">
-          <div className="max-w-3xl space-y-8">
-            {/* Tag */}
-            <div className="badge-glass text-xs tracking-[0.12em] uppercase animate-fade-up">
-              <span className="status-online mr-2"></span>
-              Local Services, Right Near You
+        {/* Hero Content Container */}
+        <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-12 w-full pt-16 pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Left Column: Text & Search Form */}
+            <div className="lg:col-span-7 space-y-8 max-w-2xl">
+              {/* Tag */}
+              <div className="badge-glass text-xs tracking-[0.12em] uppercase animate-fade-up">
+                <span className="status-online mr-2"></span>
+                Local Services, Right Near You
+              </div>
+
+              {/* Heading */}
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.08] tracking-tight animate-fade-up" style={{ animationDelay: '80ms' }}>
+                Trusted Local<br />
+                Services.{' '}
+                <span className="text-gray-400">Just Around<br className="hidden md:block" /> the Corner.</span>
+              </h1>
+
+              <p className="text-base md:text-lg text-gray-400 leading-relaxed animate-fade-up" style={{ animationDelay: '160ms' }}>
+                Find reliable electricians, plumbers, mechanics, cleaners, and other service professionals near you.
+              </p>
+
+              {/* Search Bar — Glass Pill */}
+              <form
+                onSubmit={handleSearch}
+                className="glass rounded-3xl p-2 shadow-float animate-fade-up flex flex-col sm:flex-row gap-2"
+                style={{ animationDelay: '240ms' }}
+              >
+                <div className="flex-1 flex items-center px-4 py-1 bg-white/60 rounded-2xl">
+                  <MapPin className="text-brand-accent mr-2.5 shrink-0" size={18} />
+                  <input
+                    type="text"
+                    placeholder="Your Location"
+                    defaultValue="Current Location"
+                    className="w-full bg-transparent py-2.5 text-brand-dark outline-none font-medium text-sm placeholder:text-gray-400"
+                  />
+                </div>
+                <div className="flex-1 flex items-center px-4 py-1 bg-white/60 rounded-2xl">
+                  <Search className="text-brand-accent mr-2.5 shrink-0" size={18} />
+                  <input
+                    type="text"
+                    placeholder="What service do you need?"
+                    className="w-full bg-transparent py-2.5 text-brand-dark outline-none font-medium text-sm placeholder:text-gray-400"
+                  />
+                </div>
+                <button type="submit" className="btn-primary whitespace-nowrap px-6">
+                  Find Nearby
+                </button>
+              </form>
+
+              <div className="text-xs text-gray-500 flex items-center gap-2 animate-fade-up" style={{ animationDelay: '320ms' }}>
+                <MapPin size={12} className="text-brand-accent" />
+                <span>Searching within 1 KM radius by default</span>
+              </div>
             </div>
 
-            {/* Heading */}
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold leading-[1.08] tracking-tight animate-fade-up" style={{ animationDelay: '80ms' }}>
-              Trusted Local<br />
-              Services.{' '}
-              <span className="text-gray-400">Just Around<br className="hidden md:block" /> the Corner.</span>
-            </h1>
-
-            <p className="text-base md:text-lg text-gray-400 max-w-xl leading-relaxed animate-fade-up" style={{ animationDelay: '160ms' }}>
-              Find reliable electricians, plumbers, mechanics, cleaners, and other service professionals near you.
-            </p>
-
-            {/* Search Bar — Glass Pill */}
-            <form
-              onSubmit={handleSearch}
-              className="glass rounded-3xl p-2 max-w-2xl shadow-float animate-fade-up flex flex-col sm:flex-row gap-2"
-              style={{ animationDelay: '240ms' }}
-            >
-              <div className="flex-1 flex items-center px-4 py-1 bg-white/60 rounded-2xl">
-                <MapPin className="text-brand-accent mr-2.5 shrink-0" size={18} />
-                <input
-                  type="text"
-                  placeholder="Your Location"
-                  defaultValue="Current Location"
-                  className="w-full bg-transparent py-2.5 text-brand-dark outline-none font-medium text-sm placeholder:text-gray-400"
-                />
+            {/* Right Column: Premium Curved Image Showcase */}
+            <div className="hidden lg:flex lg:col-span-5 relative h-[520px] items-end justify-center animate-scale-in" style={{ animationDelay: '120ms' }}>
+              {/* Curve design backdrop shape */}
+              <div className="absolute inset-0 overflow-hidden rounded-4xl bg-gradient-to-tr from-brand-accent/[0.04] to-brand-accent/[0.12] backdrop-blur-xs border border-white/[0.08] shadow-inner-soft">
+                {/* SVG Curve divider inside container */}
+                <svg className="absolute bottom-0 right-0 w-full h-full text-brand-accent/[0.08]" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path d="M 100 0 C 80 20, 20 80, 0 100 L 100 100 Z" fill="currentColor" />
+                </svg>
               </div>
-              <div className="flex-1 flex items-center px-4 py-1 bg-white/60 rounded-2xl">
-                <Search className="text-brand-accent mr-2.5 shrink-0" size={18} />
-                <input
-                  type="text"
-                  placeholder="What service do you need?"
-                  className="w-full bg-transparent py-2.5 text-brand-dark outline-none font-medium text-sm placeholder:text-gray-400"
-                />
-              </div>
-              <button type="submit" className="btn-primary whitespace-nowrap px-6">
-                Find Nearby
-              </button>
-            </form>
 
-            <div className="text-xs text-gray-500 flex items-center gap-2 animate-fade-up" style={{ animationDelay: '320ms' }}>
-              <MapPin size={12} className="text-brand-accent" />
-              <span>Searching within 1 KM radius by default</span>
+              {/* Floating Service Indicator 1 */}
+              <div className="absolute top-12 left-6 bg-white/95 backdrop-blur-sm p-3.5 rounded-2xl shadow-float flex items-center gap-3 animate-pulse-soft border border-brand-border z-20">
+                <div className="bg-brand-accentLight p-2 rounded-xl text-brand-accent">
+                  <Star size={16} fill="#F15A24" />
+                </div>
+                <div>
+                  <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Top Rated</div>
+                  <div className="text-xs font-bold text-brand-dark">4.9/5 Average Rating</div>
+                </div>
+              </div>
+
+              {/* Floating Service Indicator 2 */}
+              <div className="absolute bottom-24 -right-2 bg-white/95 backdrop-blur-sm p-3.5 rounded-2xl shadow-float flex items-center gap-3 animate-pulse-soft border border-brand-border z-20" style={{ animationDelay: '1s' }}>
+                <div className="bg-semantic-successLight p-2 rounded-xl text-semantic-success">
+                  <MapPin size={16} />
+                </div>
+                <div>
+                  <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Availability</div>
+                  <div className="text-xs font-bold text-brand-dark">Direct Local Dispatch</div>
+                </div>
+              </div>
+
+              {/* Service Worker Image Asset */}
+              <img
+                src={serviceWorkerImg}
+                alt="Trusted Service Professional"
+                className="relative z-10 max-h-[92%] w-auto object-contain filter drop-shadow-float hover:scale-[1.015] transition-transform duration-500 ease-smooth"
+              />
             </div>
           </div>
         </div>
@@ -113,7 +167,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 stagger-children">
             {[
-              { name: 'Electrician', img: 'https://images.unsplash.com/photo-1621905251918-48416bd8af50?q=80&w=2069&auto=format&fit=crop' },
+              { name: 'Electrician', img: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?q=80&w=2069&auto=format&fit=crop' },
               { name: 'Plumber', img: 'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?q=80&w=2070&auto=format&fit=crop' },
               { name: 'Car Mechanic', img: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?q=80&w=1974&auto=format&fit=crop' },
               { name: 'Cleaning', img: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=2070&auto=format&fit=crop' },

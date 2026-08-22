@@ -19,6 +19,15 @@ export interface VendorProfile {
   image: string;
 }
 
+export type BookingStatus =
+  | 'pending'
+  | 'accepted'
+  | 'on_the_way'
+  | 'arrived'
+  | 'in_progress'
+  | 'completed'
+  | 'cancelled';
+
 export interface Booking {
   id: string;
   customer_id: string;
@@ -26,10 +35,21 @@ export interface Booking {
   service: string;
   date: string;
   time: string;
-  status: 'pending' | 'accepted' | 'in_progress' | 'completed' | 'cancelled';
+  status: BookingStatus;
   address: string;
   notes: string;
   created_at: string;
+  // Location snapshot
+  booking_lat?: number;
+  booking_lng?: number;
+  booking_address?: string;
+  // Vendor live location (for tracking)
+  vendor_live_lat?: number;
+  vendor_live_lng?: number;
+  vendor_live_heading?: number;
+  vendor_live_speed?: number;
+  vendor_live_accuracy?: number;
+  vendor_live_timestamp?: number;
 }
 
 // Indian demo center (approximate coords for a generic city like Bangalore)
@@ -79,7 +99,15 @@ interface DataState {
   vendors: VendorProfile[];
   bookings: Booking[];
   addBooking: (booking: Booking) => void;
-  updateBookingStatus: (id: string, status: Booking['status']) => void;
+  updateBookingStatus: (id: string, status: BookingStatus) => void;
+  updateBookingVendorLocation: (
+    id: string,
+    lat: number,
+    lng: number,
+    heading?: number,
+    speed?: number,
+    accuracy?: number
+  ) => void;
   addVendor: (vendor: VendorProfile) => void;
   updateVendorStatus: (id: string, status: VendorProfile['verification_status']) => void;
 }
@@ -90,6 +118,21 @@ export const useDataStore = create<DataState>((set) => ({
   addBooking: (booking) => set((state) => ({ bookings: [...state.bookings, booking] })),
   updateBookingStatus: (id, status) => set((state) => ({
     bookings: state.bookings.map(b => b.id === id ? { ...b, status } : b)
+  })),
+  updateBookingVendorLocation: (id, lat, lng, heading, speed, accuracy) => set((state) => ({
+    bookings: state.bookings.map(b =>
+      b.id === id
+        ? {
+            ...b,
+            vendor_live_lat: lat,
+            vendor_live_lng: lng,
+            vendor_live_heading: heading,
+            vendor_live_speed: speed,
+            vendor_live_accuracy: accuracy,
+            vendor_live_timestamp: Date.now(),
+          }
+        : b
+    )
   })),
   addVendor: (vendor) => set((state) => ({ vendors: [...state.vendors, vendor] })),
   updateVendorStatus: (id, status) => set((state) => ({
@@ -109,4 +152,21 @@ export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
   const d = R * c; 
   return d;
+}
+
+// Format distance for display
+export function formatDistance(distanceKm: number): string {
+  if (distanceKm < 1) {
+    return `${Math.round(distanceKm * 1000)} m`;
+  }
+  return `${distanceKm.toFixed(1)} km`;
+}
+
+// Estimate travel time (rough: assumes ~25km/h average in city)
+export function estimateETA(distanceKm: number): string {
+  const speedKmH = 25;
+  const minutes = Math.round((distanceKm / speedKmH) * 60);
+  if (minutes < 1) return '< 1 min';
+  if (minutes === 1) return '1 min';
+  return `${minutes} min`;
 }

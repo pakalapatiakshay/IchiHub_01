@@ -1,15 +1,20 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useDataStore, calculateDistance } from '../store/dataStore';
+import { useDataStore, calculateDistance, formatDistance } from '../store/dataStore';
+import { useLocationStore } from '../store/locationStore';
 import { MapPin, Star, ShieldCheck, Clock, Phone, MessageSquare, ArrowLeft } from 'lucide-react';
 import { useMemo } from 'react';
 
-const CUSTOMER_LAT = 12.9716;
-const CUSTOMER_LNG = 77.5946;
+const DEFAULT_LAT = 12.9716;
+const DEFAULT_LNG = 77.5946;
 
 export default function ProviderProfile() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { vendors } = useDataStore();
+  const { customerLocation } = useLocationStore();
+
+  const customerLat = customerLocation?.lat || DEFAULT_LAT;
+  const customerLng = customerLocation?.lng || DEFAULT_LNG;
 
   const provider = useMemo(() => vendors.find(v => v.id === id), [vendors, id]);
 
@@ -24,7 +29,7 @@ export default function ProviderProfile() {
     );
   }
 
-  const distance = calculateDistance(CUSTOMER_LAT, CUSTOMER_LNG, provider.lat, provider.lng);
+  const distance = calculateDistance(customerLat, customerLng, provider.lat, provider.lng);
 
   return (
     <div className="bg-brand-light min-h-screen py-8 md:py-10">
@@ -83,7 +88,7 @@ export default function ProviderProfile() {
                         <MapPin size={18} />
                       </div>
                       <div>
-                        <div className="font-bold text-brand-dark text-sm">{distance.toFixed(1)} km away</div>
+                        <div className="font-bold text-brand-dark text-sm">{formatDistance(distance)} away</div>
                         <div className="text-xs text-gray-500 mt-0.5">{provider.address}, {provider.city}</div>
                       </div>
                     </div>

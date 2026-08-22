@@ -1,7 +1,7 @@
 import { useAuth } from '../../store/authStore';
 import { useDataStore } from '../../store/dataStore';
-import { LogOut, Calendar, MapPin } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { LogOut, Calendar, MapPin, Navigation } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function CustomerDashboard() {
   const { user, logout } = useAuth();
@@ -18,10 +18,25 @@ export default function CustomerDashboard() {
   const statusColor: Record<string, string> = {
     pending: 'badge-warning',
     accepted: 'badge-info',
+    on_the_way: 'badge-accent',
+    arrived: 'badge-success',
     in_progress: 'badge-accent',
     completed: 'badge-success',
     cancelled: 'badge-error',
   };
+
+  const statusLabel: Record<string, string> = {
+    pending: 'pending',
+    accepted: 'accepted',
+    on_the_way: 'on the way',
+    arrived: 'arrived',
+    in_progress: 'in progress',
+    completed: 'completed',
+    cancelled: 'cancelled',
+  };
+
+  // Statuses that allow tracking
+  const trackableStatuses = ['accepted', 'on_the_way', 'arrived', 'in_progress'];
 
   return (
     <div className="min-h-screen bg-brand-light py-8 md:py-10">
@@ -63,15 +78,30 @@ export default function CustomerDashboard() {
                 <div key={booking.id} className="card-hover p-5 flex flex-col md:flex-row justify-between md:items-center gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className={statusColor[booking.status] || 'badge-dark'}>{booking.status.replace('_', ' ')}</span>
+                      <span className={statusColor[booking.status] || 'badge-dark'}>
+                        {statusLabel[booking.status] || booking.status.replace('_', ' ')}
+                      </span>
                       <span className="text-xs text-gray-400">{booking.date} at {booking.time}</span>
                     </div>
                     <h3 className="font-bold text-brand-dark">{booking.service}</h3>
-                    <p className="text-gray-500 text-xs mt-0.5">Provider ID: {booking.vendor_id}</p>
+                    <p className="text-gray-500 text-xs mt-0.5">
+                      <MapPin size={11} className="inline mr-1" />
+                      {booking.booking_address || booking.address}
+                    </p>
                   </div>
-                  <button className="btn-secondary btn-sm self-start md:self-center">
-                    View Details
-                  </button>
+                  <div className="flex gap-2 self-start md:self-center">
+                    {trackableStatuses.includes(booking.status) && (
+                      <Link
+                        to={`/customer/bookings/${booking.id}/track`}
+                        className="btn-primary btn-sm flex items-center gap-1.5"
+                      >
+                        <Navigation size={13} /> Track
+                      </Link>
+                    )}
+                    <button className="btn-secondary btn-sm">
+                      View Details
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -82,7 +112,7 @@ export default function CustomerDashboard() {
               </div>
               <h3 className="text-lg font-bold text-brand-dark mb-2">No bookings yet</h3>
               <p className="text-gray-500 text-sm mb-6">You haven't requested any services yet.</p>
-              <button onClick={() => navigate('/providers')} className="btn-primary btn-sm">
+              <button onClick={() => navigate('/services')} className="btn-primary btn-sm">
                 Find a Provider
               </button>
             </div>

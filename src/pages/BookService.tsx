@@ -1,18 +1,21 @@
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../store/authStore';
-import { useDataStore, calculateDistance } from '../store/dataStore';
+import { useDataStore, calculateDistance, formatDistance } from '../store/dataStore';
+import { useLocationStore } from '../store/locationStore';
 import { useToastStore } from '../store/toastStore';
-import { ArrowLeft, MapPin } from 'lucide-react';
+import LocationPicker from '../components/map/LocationPicker';
+import { ArrowLeft, MapPin, Navigation, ChevronDown, ChevronUp } from 'lucide-react';
 
-const CUSTOMER_LAT = 12.9716;
-const CUSTOMER_LNG = 77.5946;
+const DEFAULT_LAT = 12.9716;
+const DEFAULT_LNG = 77.5946;
 
 export default function BookService() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { vendors, addBooking } = useDataStore();
+  const { customerLocation, requestBrowserLocation, locationLoading } = useLocationStore();
   const { addToast } = useToastStore();
 
   const provider = useMemo(() => vendors.find(v => v.id === id), [vendors, id]);
@@ -20,9 +23,14 @@ export default function BookService() {
   const [formData, setFormData] = useState({
     date: '',
     time: '',
-    address: 'Current Location (12.9716, 77.5946)',
     notes: ''
   });
+
+  // Booking location
+  const [bookingLat, setBookingLat] = useState<number | null>(null);
+  const [bookingLng, setBookingLng] = useState<number | null>(null);
+  const [bookingAddress, setBookingAddress] = useState<string>('');
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
 
   if (!provider) {
     return (
@@ -47,8 +55,28 @@ export default function BookService() {
     );
   }
 
+  const handleUseCurrentLocation = async () => {
+    const pos = await requestBrowserLocation();
+    if (pos) {
+      setBookingLat(pos.lat);
+      setBookingLng(pos.lng);
+      setBookingAddress(`Current Location (${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)})`);
+    }
+  };
+
+  const handleLocationSelected = (lat: number, lng: number, address: string) => {
+    setBookingLat(lat);
+    setBookingLng(lng);
+    setBookingAddress(address);
+    setShowLocationPicker(false);
+  };
+
   const handleBooking = (e: React.FormEvent) => {
     e.preventDefault();
+    const finalLat = bookingLat || customerLocation?.lat || DEFAULT_LAT;
+    const finalLng = bookingLng || customerLocation?.lng || DEFAULT_LNG;
+    const finalAddress = bookingAddress || `${finalLat.toFixed(4)}, ${finalLng.toFixed(4)}`;
+
     addBooking({
       id: Math.random().toString(36).substr(2, 9),
       customer_id: user.id,
@@ -57,15 +85,20 @@ export default function BookService() {
       date: formData.date,
       time: formData.time,
       status: 'pending',
-      address: formData.address,
+      address: finalAddress,
       notes: formData.notes,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      booking_lat: finalLat,
+      booking_lng: finalLng,
+      booking_address: finalAddress,
     });
     addToast(`Booking confirmed with ${provider.business_name}!`, 'success');
     navigate('/customer/dashboard');
   };
 
-  const distance = calculateDistance(CUSTOMER_LAT, CUSTOMER_LNG, provider.lat, provider.lng);
+  const effectiveLat = bookingLat || customerLocation?.lat || DEFAULT_LAT;
+  const effectiveLng = bookingLng || customerLocation?.lng || DEFAULT_LNG;
+  const distance = calculateDistance(effectiveLat, effectiveLng, provider.lat, provider.lng);
 
   return (
     <div className="bg-brand-light min-h-screen py-8 md:py-10">
@@ -88,7 +121,7 @@ export default function BookService() {
             <div>
               <h2 className="text-lg font-bold text-brand-dark">Book {provider.business_name}</h2>
               <div className="flex items-center text-xs text-gray-500 mt-0.5">
-                <MapPin size={12} className="mr-1 text-brand-accent" /> {distance.toFixed(1)} km away
+                <MapPin size={12} className="mr-1 text-brand-accent" /> {formatDistance(distance)} away
               </div>
             </div>
           </div>
@@ -119,15 +152,64 @@ export default function BookService() {
                 </div>
               </div>
 
+              {/* Service Location Section */}
               <div>
-                <label className="input-label">Service Address</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.address}
-                  onChange={e => setFormData({...formData, address: e.target.value})}
-                  className="input-field"
-                />
+                <label className="input-label flex items-center gap-1.5">
+                  <MapPin size={13} className="text-brand-accent" />
+                  Where should the service be performed?
+                </label>
+
+                {/* Quick location options */}
+                <div className="flex gap-2 mb-3 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={handleUseCurrentLocation}
+                    disabled={locationLoading}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                      bookingLat && !showLocationPicker
+                        ? 'bg-brand-accent text-white'
+                        : 'bg-brand-accentLight text-brand-accent hover:bg-brand-accent hover:text-white'
+                    }`}
+                  >
+                    <Navigation size={12} />
+                    {locationLoading ? 'Getting...' : 'Use Current Location'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowLocationPicker(!showLocationPicker)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                      showLocationPicker
+                        ? 'bg-brand-accent text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    <MapPin size={12} />
+                    Select on Map
+                    {showLocationPicker ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                  </button>
+                </div>
+
+                {/* Location picker */}
+                {showLocationPicker && (
+                  <LocationPicker
+                    initialPosition={bookingLat && bookingLng ? [bookingLat, bookingLng] : undefined}
+                    onLocationSelect={handleLocationSelected}
+                    className="mb-3"
+                  />
+                )}
+
+                {/* Selected location display */}
+                {bookingAddress && (
+                  <div className="bg-gray-50 rounded-xl p-3 flex items-start gap-2">
+                    <MapPin size={14} className="text-brand-accent mt-0.5 flex-shrink-0" />
+                    <p className="text-xs text-gray-600 line-clamp-2">{bookingAddress}</p>
+                  </div>
+                )}
+                {!bookingAddress && !showLocationPicker && (
+                  <p className="text-[11px] text-gray-400">
+                    Default location (Bangalore center) will be used if not specified.
+                  </p>
+                )}
               </div>
 
               <div>

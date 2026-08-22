@@ -10,6 +10,8 @@ import RoleProtectedRoute from './components/layout/RoleProtectedRoute';
 import CustomerDashboard from './pages/dashboards/CustomerDashboard';
 import VendorDashboard from './pages/dashboards/VendorDashboard';
 import AdminDashboard from './pages/dashboards/AdminDashboard';
+import CustomerTracking from './pages/tracking/CustomerTracking';
+import VendorTracking from './pages/tracking/VendorTracking';
 
 function App() {
   return (
@@ -42,6 +44,10 @@ function App() {
             <Route path="admin/dashboard" element={<AdminDashboard />} />
           </Route>
         </Route>
+
+        {/* Tracking Routes — outside Layout (full-screen) */}
+        <Route path="customer/bookings/:bookingId/track" element={<CustomerTracking />} />
+        <Route path="vendor/bookings/:bookingId/track" element={<VendorTracking />} />
       </Routes>
     </BrowserRouter>
   );
