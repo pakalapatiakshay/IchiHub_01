@@ -31,7 +31,7 @@ function createVendorIcon(verified: boolean, isTracking: boolean) {
   }
 
   // Discovery marker
-  const color = verified ? '#F15A24' : '#9CA3AF';
+  const color = verified ? '#FF5A1F' : '#6B6B6B';
   const iconSvg = renderToStaticMarkup(
     <svg width="32" height="42" viewBox="0 0 32 42" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M16 0C7.164 0 0 7.164 0 16c0 12 16 26 16 26s16-14 16-26C32 7.164 24.836 0 16 0z" fill={color} />

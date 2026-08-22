@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth, Role } from '../../store/authStore';
-import { MapPin } from 'lucide-react';
+import Logo from '../../components/layout/Logo';
 
 interface AuthPageProps {
   role: Role;
@@ -43,11 +43,8 @@ export default function AuthPage({ role, type }: AuthPageProps) {
   return (
     <div className="min-h-screen bg-brand-light flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <Link to="/" className="inline-flex items-center gap-2.5 mb-8">
-          <div className="bg-brand-accent p-1.5 rounded-xl text-white">
-            <MapPin size={22} />
-          </div>
-          <span className="font-display font-bold text-xl text-brand-dark tracking-tight">IchiHub</span>
+        <Link to="/" className="inline-flex items-center mb-8">
+          <Logo isDarkBg={false} height={40} />
         </Link>
         <h2 className="text-2xl font-display font-bold text-brand-dark capitalize">
           {title}

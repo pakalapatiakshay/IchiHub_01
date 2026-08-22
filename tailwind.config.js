@@ -8,16 +8,16 @@ export default {
     extend: {
       colors: {
         brand: {
-          dark: '#111111',
+          dark: '#171717',
           light: '#F7F5F1',
           white: '#FFFFFF',
-          accent: '#F15A24',
-          accentHover: '#E04D18',
-          accentLight: 'rgba(241, 90, 36, 0.08)',
-          accentGlow: 'rgba(241, 90, 36, 0.25)',
+          accent: '#FF5A1F',
+          accentHover: '#E64F19',
+          accentLight: 'rgba(255, 90, 31, 0.08)',
+          accentGlow: 'rgba(255, 90, 31, 0.25)',
           surface: '#FFFFFF',
           card: '#FFFFFF',
-          muted: '#6B7280',
+          muted: '#6B6B6B',
           border: 'rgba(0, 0, 0, 0.06)',
           borderLight: 'rgba(255, 255, 255, 0.12)',
         },

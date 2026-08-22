@@ -15,9 +15,9 @@ const pinIcon = L.divIcon({
   className: 'ichi-picker-pin',
   html: `
     <svg width="36" height="48" viewBox="0 0 32 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 0C7.164 0 0 7.164 0 16c0 12 16 26 16 26s16-14 16-26C32 7.164 24.836 0 16 0z" fill="#F15A24"/>
+      <path d="M16 0C7.164 0 0 7.164 0 16c0 12 16 26 16 26s16-14 16-26C32 7.164 24.836 0 16 0z" fill="#FF5A1F"/>
       <circle cx="16" cy="16" r="8" fill="white"/>
-      <circle cx="16" cy="16" r="4" fill="#F15A24"/>
+      <circle cx="16" cy="16" r="4" fill="#FF5A1F"/>
     </svg>
   `,
   iconSize: [36, 48],

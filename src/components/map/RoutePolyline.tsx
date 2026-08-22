@@ -17,7 +17,7 @@ interface RoutePolylineProps {
 export default function RoutePolyline({
   from,
   to,
-  color = '#F15A24',
+  color = '#FF5A1F',
   weight = 4,
   onRouteInfo,
 }: RoutePolylineProps) {

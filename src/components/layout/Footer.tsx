@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MapPin } from 'lucide-react';
+import Logo from './Logo';
 
 export default function Footer() {
   return (
@@ -8,11 +8,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
           <div>
-            <Link to="/" className="flex items-center gap-2.5 mb-5">
-              <div className="bg-brand-accent p-1.5 rounded-xl text-white">
-                <MapPin size={22} />
-              </div>
-              <span className="font-display font-bold text-xl text-white tracking-tight">IchiHub</span>
+            <Link to="/" className="inline-block mb-5">
+              <Logo isDarkBg={true} height={40} showTagline={true} />
             </Link>
             <p className="text-sm leading-relaxed max-w-xs text-gray-500">
               Local Services. Right Around the Corner. Find trusted professionals near you for all your home and vehicle needs.

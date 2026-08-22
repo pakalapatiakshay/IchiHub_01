@@ -19,13 +19,13 @@ export default function Home() {
           <svg className="absolute top-0 right-0 w-full h-full text-brand-accent/[0.04]" viewBox="0 0 100 100" preserveAspectRatio="none">
             <defs>
               <linearGradient id="heroBgGrad" x1="100%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#F15A24" stopOpacity="0.2" />
-                <stop offset="50%" stopColor="#E04D18" stopOpacity="0.08" />
-                <stop offset="100%" stopColor="#111111" stopOpacity="0" />
+                <stop offset="0%" stopColor="#FF5A1F" stopOpacity="0.2" />
+                <stop offset="50%" stopColor="#E64F19" stopOpacity="0.08" />
+                <stop offset="100%" stopColor="#171717" stopOpacity="0" />
               </linearGradient>
               <linearGradient id="solidAccentLine" x1="100%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#F15A24" />
-                <stop offset="100%" stopColor="#E04D18" />
+                <stop offset="0%" stopColor="#FF5A1F" />
+                <stop offset="100%" stopColor="#E64F19" />
               </linearGradient>
             </defs>
             <path d="M 100 0 C 70 10, 30 50, 0 100 L 100 100 Z" fill="url(#heroBgGrad)" />
@@ -102,7 +102,7 @@ export default function Home() {
               {/* Floating Service Indicator 1 */}
               <div className="absolute top-12 left-6 bg-white/95 backdrop-blur-sm p-3.5 rounded-2xl shadow-float flex items-center gap-3 animate-pulse-soft border border-brand-border z-20">
                 <div className="bg-brand-accentLight p-2 rounded-xl text-brand-accent">
-                  <Star size={16} fill="#F15A24" />
+                  <Star size={16} fill="#FF5A1F" />
                 </div>
                 <div>
                   <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Top Rated</div>

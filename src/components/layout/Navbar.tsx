@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { MapPin, Menu, X, ChevronRight, User, LogOut } from 'lucide-react';
+import { Menu, X, ChevronRight, User, LogOut } from 'lucide-react';
 import { useAuth } from '../../store/authStore';
+import Logo from './Logo';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -51,11 +52,8 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="bg-brand-accent p-1.5 rounded-xl text-white group-hover:bg-brand-accentHover transition-all duration-200 group-hover:shadow-glow">
-              <MapPin size={22} />
-            </div>
-            <span className="font-display font-bold text-xl text-white tracking-tight">IchiHub</span>
+          <Link to="/" className="flex items-center group">
+            <Logo isDarkBg={true} height={40} />
           </Link>
 
           {/* Desktop Nav Links */}
@@ -135,11 +133,8 @@ export default function Navbar() {
           <div className="absolute top-0 right-0 h-full w-[82%] max-w-[360px] bg-brand-dark/95 backdrop-blur-glass-lg text-white flex flex-col animate-slide-in-right border-l border-white/[0.06]">
             {/* Drawer Header */}
             <div className="flex items-center justify-between p-5 border-b border-white/[0.06]">
-              <Link to="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
-                <div className="bg-brand-accent p-1.5 rounded-xl text-white">
-                  <MapPin size={18} />
-                </div>
-                <span className="font-display font-bold text-lg tracking-tight">IchiHub</span>
+              <Link to="/" className="flex items-center" onClick={() => setMobileOpen(false)}>
+                <Logo isDarkBg={true} height={36} />
               </Link>
               <button
                 onClick={() => setMobileOpen(false)}
